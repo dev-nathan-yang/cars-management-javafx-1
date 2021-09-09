@@ -8,11 +8,17 @@ import org.junit.jupiter.api.Test;
 
 import app.Brand;
 import app.CarSystem;
+import app.ConsoleController;
 import app.Customer;
 import app.Type;
 import app.Vehicle;
 
 class SystemTest {
+	
+	@Test
+	void testConsoleSystem() {
+		new ConsoleController().run();
+	}
 
 	@Test
 	void test() {

@@ -1,18 +1,20 @@
 package app;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 public class CarSystem {
 	
-	List<Customer> customerList;
-	List<Vehicle> vehicleList;
+	private List<Customer> customerList;
+	private List<Vehicle> vehicleList;
 	
 	public CarSystem() {
 		this.customerList = new ArrayList<Customer>();
 		this.vehicleList = new ArrayList<Vehicle>();
 	}
-	
 	
 	public void createCustomer (String name, String phoneNumber, String email) {
 		customerList.add(new Customer(name,phoneNumber,email));
@@ -69,8 +71,6 @@ public class CarSystem {
 	public void updateVehicle(String plateNumber, Vehicle vehicle) {
 		for(Vehicle v:vehicleList) {
 			if(v.getPlateNumber().equals(plateNumber)) {
-
-
 				v.setBrand(vehicle.getBrand());
 				v.setDateOfProduction(vehicle.getDateOfProduction());
 				v.setPenaltyRate(vehicle.getPenaltyRate());
@@ -112,4 +112,22 @@ public class CarSystem {
 		}
 		System.out.println();
 	}
+
+	public List<Customer> getCustomerList() {
+		return customerList;
+	}
+
+//	public void setCustomerList(List<Customer> customerList) {
+//		this.customerList = customerList;
+//	}
+
+	public List<Vehicle> getVehicleList() {
+		return vehicleList;
+	}
+
+//	public void setVehicleList(List<Vehicle> vehicleList) {
+//		this.vehicleList = vehicleList;
+//	}
+
+	
 }
