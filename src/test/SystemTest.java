@@ -8,16 +8,36 @@ import org.junit.jupiter.api.Test;
 
 import app.Brand;
 import app.CarSystem;
-import app.ConsoleController;
 import app.Customer;
 import app.Type;
 import app.Vehicle;
+import app.controller.ConsoleController;
 
 class SystemTest {
 	
 	@Test
 	void testConsoleSystem() {
-		new ConsoleController().run();
+		CarSystem carSys = new CarSystem();
+		Customer c1 = new Customer("ALex", "1554897", "dfdf@gaa.com");
+		Customer c2 = new Customer("Bbob", "123213123", "bob@bob.com");
+		Customer c3 = new Customer("Cindy", "323213213", "cindy@qq.com");
+		Customer c4 = new Customer("doggy", "4123123", "doggy@qqc.com");
+		
+		Vehicle v1 = new Vehicle (100, "XD1", 101, Brand.Audi, Type.SUV, new Date());
+		Vehicle v2 = new Vehicle (200, "XD2", 201, Brand.Benz, Type.Van, new Date());
+		Vehicle v3 = new Vehicle (300, "XD3", 301, Brand.Lambogini, Type.Van, new Date());
+		Vehicle v4 = new Vehicle (400, "XD4", 401, Brand.Audi, Type.Sedan, new Date());
+		
+		carSys.addVehicle(v1);
+		carSys.addVehicle(v2);
+		carSys.addVehicle(v3);
+		carSys.addVehicle(v4);
+
+		carSys.addCustomer(c1);
+		carSys.addCustomer(c2);
+		carSys.addCustomer(c3);
+		carSys.addCustomer(c4);
+		new ConsoleController(carSys).run();
 	}
 
 	@Test

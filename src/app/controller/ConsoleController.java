@@ -1,44 +1,52 @@
-package app;
+package app.controller;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.Date;
-import java.util.Scanner;
-
+import app.Brand;
 import app.CarSystem;
+import app.Type;
+import app.view.ConsoleView;
 
 public class ConsoleController {
 
-	CarSystem carSys;
+	CarSystem carSys; // The model
+	ConsoleView view; // The view
 
 	public ConsoleController() {
 		carSys = new CarSystem();
+		view = new ConsoleView();
 	}
 
-	public void rentVehicle() {
-//		String email = getInput("please enter user's email:");
-//		Customer tempCustomer = retreiveCustomer(email);
-//		if(tempCustomer == null) {
-//			System.out.println("user does not exist");
-//			String answerToCreate = getInput("u wish to create a new user? Y:N :");
-//			if(answerToCreate.equals("Y")) {
-//				String name = getInput("please enter user's name:");
-//				String phoneNumber = getInput("please enter phoneNumber:");
-//				createCustomer(name, phoneNumber, email);
-//			}else if(answerToCreate.equals("N")) {
-//				return;
-//			}
-//			
-//		}
+	public ConsoleController(CarSystem carSys) {
+		this.carSys = carSys;
+		view = new ConsoleView();
+	}
+
+	public void rentVehicle(String email) {
+
+		String info = carSys.getVehicleSelectionListString();
+		if (info.length() < 1) {
+			System.out.println("No available cars!");
+			return;
+		}
+		System.out.println("rent a vehicle");
+		System.out.println("please pick a vehicle: ");
+		System.out.println(info);
+		int vIndex = view.getIntInput("please select index from above: ");
+		if (vIndex >= carSys.getVehicleList().size() || vIndex < 0
+				|| !carSys.getVehicleByIndex(vIndex).isAvailableForRenting()) {
+			System.out.println("Not a valid input.");
+			return;
+		}
+
+		carSys.rentCar(email, vIndex, view.getDateInput("Please input estimate return date (DD-MM-yyyy):"));
 
 	}
 
 	public void run() {
-		showMainMenu();
+		openMainMenu();
 	}
 
-	private void showMainMenu() {
+	private void openMainMenu() {
 		while (true) {
 			// show main menu, ask for input
 			// corresponding menu
@@ -46,11 +54,11 @@ public class ConsoleController {
 			// vehicle-submenu: 1.c 2.r 3.u 4.d 5.view cars 0.go back
 			// customer-submenu: 1.c 2.r 3.u 4.d 5.view all 0.go back
 			// rental-submenu: 1.rent 2.return 3.view records 0.go back
-			switch (getInput(
+			switch (view.getInput(
 					"Welcome to car managment system\n" + "1.vehicle\n" + "2.customer\n" + "3.rental\n" + "0.exit")) {
 			case "1":
 				System.out.println("Vehicle menu");
-				showVehicleMenu();
+				openVehicleMenu();
 				break;
 			case "2":
 				System.out.println("Customer menu");
@@ -58,7 +66,19 @@ public class ConsoleController {
 				break;
 			case "3":
 				System.out.println("Rental");
-				showRentalMenu();
+				String email;
+				while (true) {
+					email = view.getInput("please enter your email to login(enter empty to go back): ");
+					if (email.equals(""))
+						break;
+					if (carSys.ifEmailExists(email)) {
+						openRentalMenu(email);
+						break;
+					} else {
+						System.out.println("Not exsited email!");
+					}
+
+				}
 				break;
 			case "0":
 				System.out.println("See you next time");
@@ -74,18 +94,17 @@ public class ConsoleController {
 		}
 	}
 
-	private void showRentalMenu() {
-		// TODO Auto-generated method stub
+	private void openRentalMenu(String email) {
 		while (true) {
 			// rental-submenu: 1.rent 2.return 3.view records 0.go back
 
-			switch (getInput("Please choose from the following actions\n" + "1.rent a vehicle\n"
+			switch (view.getInput("Please choose from the following actions\n" + "1.rent a vehicle\n"
 					+ "2.return a vehicle\n" + "3.view records\n" + "0.go back")) {
 			case "1":
-				System.out.println("rent a vehicle");
+				rentVehicle(email);
 				break;
 			case "2":
-				System.out.println("return a vehicle");
+				returnVehicle(email);
 				break;
 			case "3":
 				System.out.println("3.view records");
@@ -96,11 +115,24 @@ public class ConsoleController {
 			default:
 				System.out.println("Not valid input!");
 				break;
-
 			}
 			System.out.println();
-
 		}
+	}
+
+	private void returnVehicle(String email) {
+		System.out.println("return a vehicle");
+		// 1. please enter your name (email): 2.show renting record 3. choose which car
+		// to return. 4. enter return date 5. show total fee
+
+		System.out.println("Renting cars:\n");
+		System.out.println(carSys.getRentingVehicleStringByCustomerEmail(email));
+		int index = view.getIntInput("Please select index from above");
+		if (index < 0 || index >= carSys.getRentingVehicleBListEmail(email).size()) {
+			System.out.println("Not a valid input");
+			return;
+		}
+		carSys.returnCar(email, index);
 	}
 
 	private void showCustomerMenu() {
@@ -108,7 +140,7 @@ public class ConsoleController {
 		while (true) {
 
 			// customer-submenu: 1.c 2.r 3.u 4.d 5.view all 0.go back
-			switch (getInput(
+			switch (view.getInput(
 					"Please choose from the following actions\n" + "1.add a customer\n" + "2.search a customer\n"
 							+ "3.update a customer\n" + "4.delete a customer\n" + "5.view all\n" + "0.go back")) {
 			case "1":
@@ -125,6 +157,7 @@ public class ConsoleController {
 				break;
 			case "5":
 				System.out.println("view all");
+				System.out.println(carSys.getCustomerSelectionListString());
 				break;
 			case "0":
 				System.out.println("go back");
@@ -139,7 +172,7 @@ public class ConsoleController {
 		}
 	}
 
-	private void showVehicleMenu() {
+	private void openVehicleMenu() {
 
 		while (true) {
 
@@ -147,14 +180,15 @@ public class ConsoleController {
 			// customer-submenu: 1.c 2.r 3.u 4.d 5.view all 0.go back
 			// rental-submenu: 1.rent 2.return 3.view records 0.go back
 
-			switch (getInput("Please choose from the following actions\n" + "1.add a vehicle\n" + "2.search a vehicle\n"
-					+ "3.update a vehicle\n" + "4.delete a vehicle\n" + "5.view all\n" + "0.go back")) {
+			switch (view.getInput(
+					"Please choose from the following actions\n" + "1.add a vehicle\n" + "2.search a vehicle\n"
+							+ "3.update a vehicle\n" + "4.delete a vehicle\n" + "5.view all\n" + "0.go back")) {
 			case "1":
 				System.out.println("add");
-				carSys.createVehicle(getDoubleInput("Input penalty rate:"), getInput("Input Plate Number:"),
-						getDoubleInput("Input rent rate:"), getBrand(), getType(), getInputDate());
+				carSys.createVehicle(view.getDoubleInput("Input penalty rate:"), view.getInput("Input Plate Number:"),
+						view.getDoubleInput("Input rent rate:"), null,null, null);
 				System.out.println("Created!");
-				System.out.println(carSys.getVehicleList().get(carSys.getVehicleList().size()-1));
+				System.out.println(carSys.getVehicleList().get(carSys.getVehicleList().size() - 1));
 				break;
 			case "2":
 				System.out.println("search");
@@ -167,6 +201,8 @@ public class ConsoleController {
 				break;
 			case "5":
 				System.out.println("view all");
+				String allCarsInfo = carSys.getAllVehiclesInfo();
+				System.out.println(allCarsInfo);
 				break;
 			case "0":
 				System.out.println("go back");
@@ -181,40 +217,4 @@ public class ConsoleController {
 		}
 	}
 
-	private Date getInputDate() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	private Type getType() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	private Brand getBrand() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	private double getDoubleInput(String hint) {
-		try {
-			String raw = getInput(hint);
-			return Double.parseDouble(raw);
-		} catch (NumberFormatException e) {
-			return getDoubleInput(hint);
-		}
-	}
-
-	private String getInput(String hint) {
-		System.out.println(hint);
-		BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-		try {
-			String output = reader.readLine();
-			return output;
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
-	}
 }

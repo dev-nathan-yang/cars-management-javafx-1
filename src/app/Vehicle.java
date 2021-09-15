@@ -6,9 +6,9 @@ import java.util.List;
 public class Vehicle {
 	private double penaltyRate;
 	private String plateNumber;
-	private double rentingRate;
-	private Brand brand;
-	private Type type;
+	private double rentingRate;//
+	private Brand brand;//
+	private Type type;//
 	private Date dateOfProduction;
 	private Customer rentingCustomer;
 	private List<RentalRecord> records;
@@ -120,6 +120,11 @@ public class Vehicle {
 		return "Vehicle [penaltyRate=" + penaltyRate + ", plateNumber=" + plateNumber + ", rentingRate=" + rentingRate
 				+ ", brand=" + brand + ", type=" + type + ", dateOfProduction=" + dateOfProduction
 				+ ", rentingCustomer=" + rentingCustomer + ", records=" + records + "]";
+	}
+
+	public String getCurrentCustomerInfo() {
+		
+		return isAvailableForRenting()? "\t":rentingCustomer.getName();
 	}
 	
 	
