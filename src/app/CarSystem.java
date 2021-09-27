@@ -61,9 +61,10 @@ public class CarSystem {
 		System.out.println();
 	}
 
-	public void createVehicle(double penaltyRate, String plateNumber, double rentingRate, Brand brand, Type type,
+	public void createVehicle(double penaltyRate, String plateNumber, double rentingRate, int brandIdx, int typeIdx,
 			Date dateOfProduction) {
-		vehicleList.add(new Vehicle(penaltyRate, plateNumber, rentingRate, brand, type, dateOfProduction));
+		vehicleList.add(new Vehicle(penaltyRate, plateNumber, rentingRate, Brand.values()[brandIdx],
+				Type.values()[typeIdx], dateOfProduction));
 	}
 
 	public void updateVehicle(String plateNumber, Vehicle vehicle) {
@@ -134,7 +135,8 @@ public class CarSystem {
 	public String getVehicleSelectionListString() {
 		String info = "";
 		for (Vehicle v : getVehicleList()) {
-			if(!v.isAvailableForRenting()) continue;
+			if (!v.isAvailableForRenting())
+				continue;
 			info += (getVehicleList().indexOf(v) + "Type: " + v.getType() + ", Brand: " + v.getBrand() + "Rent Rate:"
 					+ v.getRentingRate() + "\n");
 		}
@@ -156,8 +158,8 @@ public class CarSystem {
 	}
 
 	private Customer getCustomerByEmail(String email) {
-		for(Customer c : customerList) {
-			if(c.getEmail().equals(email)) {
+		for (Customer c : customerList) {
+			if (c.getEmail().equals(email)) {
 				return c;
 			}
 		}
@@ -168,40 +170,42 @@ public class CarSystem {
 		String info = "";
 		for (Vehicle v : getVehicleList()) {
 			info += ("IsAvailable=" + v.isAvailableForRenting() + " " + v.getCurrentCustomerInfo() + " PlateNumer "
-					+ v.getPlateNumber() + " Type: " + v.getType() + ", Brand: " + v.getBrand() + "Rent Rate:"
+					+ v.getPlateNumber() + ", Type: " + v.getType() + ", Brand: " + v.getBrand() + ", Rent Rate:"
 					+ v.getRentingRate() + "\n");
 		}
 		return info;
 	}
 
 	public boolean ifEmailExists(String email) {
-		for(Customer c: customerList) {
-			if(c.getEmail().equals(email)) {
+		for (Customer c : customerList) {
+			if (c.getEmail().equals(email)) {
 				return true;
 			}
 		}
 		return false;
 	}
-	
-	public List<Vehicle> getRentingVehicleBListEmail(String email){
+
+	public List<Vehicle> getRentingVehicleBListEmail(String email) {
 		ArrayList<Vehicle> rentingVehicles = new ArrayList<>();
-		for(Vehicle v: vehicleList) {
-			if(v.isAvailableForRenting()) continue;  // for not renting customer, skip it
-			if(v.getRentingCustomer().getEmail().equals(email)) {
+		for (Vehicle v : vehicleList) {
+			if (v.isAvailableForRenting())
+				continue; // for not renting customer, skip it
+			if (v.getRentingCustomer().getEmail().equals(email)) {
 				rentingVehicles.add(v);
 			}
 		}
 		return rentingVehicles;
 	}
-	
+
 	public String getRentingVehicleStringByCustomerEmail(String email) {
 		String info = "";
-		for(Vehicle v: getRentingVehicleBListEmail(email)) {
-			info += ""+ getRentingVehicleBListEmail(email).indexOf(v)+ " "+ v.getPlateNumber()+ " "+ v.getType()+"\n";
+		for (Vehicle v : getRentingVehicleBListEmail(email)) {
+			info += "" + getRentingVehicleBListEmail(email).indexOf(v) + " " + v.getPlateNumber() + " " + v.getType()
+					+ "\n";
 		}
 		return info;
 	}
-	
+
 	public void returnCar(String email, int index) {
 		getRentingVehicleBListEmail(email).get(index).returnVehicle();
 	}
@@ -210,4 +214,65 @@ public class CarSystem {
 //		this.vehicleList = vehicleList;
 //	}
 
+	public String getBrandString() {
+		String info = "";
+
+		for (int i = 0; i < Brand.values().length; i++) {
+			info += i + ". " + Brand.values()[i].toString() + "\n";
+		}
+		return info;
+	}
+
+	public String getTypeString() {
+		String info = "";
+
+		for (int i = 0; i < Type.values().length; i++) {
+			info += i + ". " + Type.values()[i].toString() + "\n";
+		}
+		return info;
+	}
+
+	public String findAndGetCarString(String input) {
+		if(retreiveVehicle(input)==null) return "Not found";
+		return retreiveVehicle(input).toString();
+	}
+
+	public void updateVehiclePenaltyRate(String plateNumber, double doubleInput) {
+		if(retreiveVehicle(plateNumber)==null) return;
+		retreiveVehicle(plateNumber).setPenaltyRate(doubleInput);
+		
+//		for(Vehicle v: vehicleList) {
+//			if(v.getPlateNumber().equals(plateNumber)) {
+//				v.setPenaltyRate(doubleInput);
+//				return;
+//			}
+//		}
+	}
+
+	public void updateVehicleDate(String plateNumber, Date dateInput) {
+		if(retreiveVehicle(plateNumber)==null) return;
+		retreiveVehicle(plateNumber).setDateOfProduction(dateInput);
+	}
+
+	public void updateVehicleBrand(String plateNumber, int intInput) {
+		if(retreiveVehicle(plateNumber)==null) return;
+		retreiveVehicle(plateNumber).setBrandByIdx(intInput);
+	}
+
+	public void updateVehicleType(String plateNumber, int intInput) {
+		if(retreiveVehicle(plateNumber)==null) return;
+		retreiveVehicle(plateNumber).setTypeByIdx(intInput);
+		
+	}
+
+	public void updateVehiclePlateNumber(String plateNumber, String input) {
+		if(retreiveVehicle(plateNumber)==null) return;
+		retreiveVehicle(plateNumber).setPlateNumber(input);
+	}
+
+	public void updateVehicleRentingRate(String plateNumber, double doubleInput) {
+		if(retreiveVehicle(plateNumber)==null) return;
+		retreiveVehicle(plateNumber).setRentingRate(doubleInput);
+		
+	}
 }

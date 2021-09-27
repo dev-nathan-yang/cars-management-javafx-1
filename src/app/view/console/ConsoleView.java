@@ -1,4 +1,4 @@
-package app.view;
+package app.view.console;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -26,6 +26,13 @@ public class ConsoleView {
 		} catch (IOException e) {
 			System.out.println("Invalid input!");
 			return getInput(hint);
+		}
+	}
+
+	public void printFields(String[][] arr) {
+		for (int row = 0; row < arr.length; row++) {
+			int last = arr[row].length - 1;
+			System.out.println(row + ". " + arr[row][last]);
 		}
 	}
 

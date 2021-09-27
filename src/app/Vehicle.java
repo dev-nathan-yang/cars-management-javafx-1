@@ -1,4 +1,6 @@
 package app;
+
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -35,7 +37,7 @@ public class Vehicle {
 	}
 
 	public void returnVehicle() {
-		this.records.get(this.records.size()-1).setActualReturnDate();
+		this.records.get(this.records.size() - 1).setActualReturnDate();
 		this.setAvailableForRenting();
 	}
 
@@ -79,9 +81,14 @@ public class Vehicle {
 		return brand;
 	}
 
-	public void setBrand(Brand brand) {
-		this.brand = brand;
+	public void setBrandByIdx(int brandIndex) {
+		this.brand = Brand.values()[brandIndex];
 	}
+	
+	public void setBrand(Brand brand) {
+		this.brand =brand;
+	}
+
 
 	public Type getType() {
 		return type;
@@ -89,6 +96,10 @@ public class Vehicle {
 
 	public void setType(Type type) {
 		this.type = type;
+	}
+
+	public void setTypeByIdx(int typeIndex) {
+		this.type = Type.values()[typeIndex];
 	}
 
 	public Date getDateOfProduction() {
@@ -123,10 +134,23 @@ public class Vehicle {
 	}
 
 	public String getCurrentCustomerInfo() {
-		
-		return isAvailableForRenting()? "\t":rentingCustomer.getName();
+
+		return isAvailableForRenting() ? "\t" : rentingCustomer.getName();
 	}
+
+	public String[][] getFields() {
+		Class<? extends Vehicle> c = this.getClass();
+		Field[] fields = c.getDeclaredFields();	
+		String[][] temp = new String[fields.length][2];
+		for (int i = 0; i < fields.length; i++) {
+			String[] fieldsInfo = fields[i].toString().split(" ");
 	
-	
-	
+			String[] dataTypeArr = fieldsInfo[1].split("\\.");
+			String[] fieldNameArr = fieldsInfo[2].split("\\.");
+			temp[i][0] = dataTypeArr[dataTypeArr.length - 1];
+			temp[i][1] = fieldNameArr[fieldNameArr.length - 1];
+			}
+		return temp;
+	}
+
 }

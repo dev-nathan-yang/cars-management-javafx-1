@@ -4,7 +4,7 @@ import java.util.Date;
 import app.Brand;
 import app.CarSystem;
 import app.Type;
-import app.view.ConsoleView;
+import app.view.console.ConsoleView;
 
 public class ConsoleController {
 
@@ -185,19 +185,60 @@ public class ConsoleController {
 							+ "3.update a vehicle\n" + "4.delete a vehicle\n" + "5.view all\n" + "0.go back")) {
 			case "1":
 				System.out.println("add");
-				carSys.createVehicle(view.getDoubleInput("Input penalty rate:"), view.getInput("Input Plate Number:"),
-						view.getDoubleInput("Input rent rate:"), null,null, null);
+
+				double penaltyRate = view.getDoubleInput("Input penalty rate:");
+				String plateNumber = view.getInput("Input plate number: ");
+				double rentRate = view.getDoubleInput("Input rent rate:");
+				Date dataOfProduction = view.getDateInput("(Input data of production (DD-MM-yyyy):");
+				System.out.println(carSys.getBrandString());
+				int brandIndex = view.getIntInput("Select brand");
+				System.out.println(carSys.getTypeString());
+				int typeIndex = view.getIntInput("Select type");
+				carSys.createVehicle(penaltyRate, plateNumber, rentRate, brandIndex, typeIndex, dataOfProduction);
 				System.out.println("Created!");
 				System.out.println(carSys.getVehicleList().get(carSys.getVehicleList().size() - 1));
 				break;
 			case "2":
 				System.out.println("search");
+				String carInfoString = carSys.findAndGetCarString(view.getInput("Please enter plate number: "));
+				System.out.println(carInfoString);
 				break;
 			case "3":
+				// 1.find the vehicle which is to be updated, if null return
+				// 2.determine which fields to update
+				// 2.1 show the found vehicle info
+				// 2.2 get user\'s CORRESPONDING input fields to update
+				// e.g. input plate number
+				// => find a vehicle
+				// => display the vehicle info
+				// => choose which field to update
+				// => input update
+				// => complete update
+				// 0. Plate Number:String
+				// 1. Renting Rate:double
+				// 2. Date of Production:Date
+				// if ==0, return view.getInput()...
 				System.out.println("update");
+				String updatePlateNumber = view.getInput("Input car plate number:");
+				if (carSys.retreiveVehicle(updatePlateNumber) == null) {
+					System.out.println("Not found");
+					return;
+				}
+				String[][] fields = carSys.retreiveVehicle(updatePlateNumber).getFields();
+				view.printFields(fields);
+				int choose = view.getIntInput("Select what you want to change:");
+				if (choose < 0 || choose >= fields.length) {
+					System.out.println("Invalid Input");
+					return;
+				}
+				dynamicInput(updatePlateNumber, fields[choose][1], "Please input updated value");
+				System.out.println("Complete!");
 				break;
 			case "4":
 				System.out.println("delete");
+				System.out.println(carSys.getAllVehiclesInfo());
+				carSys.deleteVehicle(view.getInput("please input plate number to delete: "));
+				System.out.println("After delete: " + "\n" + carSys.getAllVehiclesInfo());
 				break;
 			case "5":
 				System.out.println("view all");
@@ -215,6 +256,41 @@ public class ConsoleController {
 			System.out.println();
 
 		}
+	}
+
+	private void dynamicInput(String plateNumber, String fieldName, String hint) {
+		switch (fieldName) {
+		case "penaltyRate":
+			carSys.updateVehiclePenaltyRate(plateNumber, view.getDoubleInput(hint));
+			return;
+		case "plateNumber":
+			carSys.updateVehiclePlateNumber(plateNumber, view.getInput(hint));
+			return;
+		case "rentingRate":
+			carSys.updateVehicleRentingRate(plateNumber, view.getDoubleInput(hint));
+			return;
+		case "brand":
+			System.out.println(carSys.getBrandString());
+			carSys.updateVehicleBrand(plateNumber, view.getIntInput(hint));
+			return;
+		case "type":
+			System.out.println(carSys.getTypeString());
+			carSys.updateVehicleType(plateNumber, view.getIntInput(hint));
+			return;
+		case "dateOfProduction":
+			carSys.updateVehicleDate(plateNumber, view.getDateInput(hint));
+			return;
+		case "rentingCustomer":
+			openUpdateRentingCustomerMenu();
+			return;
+		default:
+			return;
+		}
+	}
+
+	private void openUpdateRentingCustomerMenu() {
+		// TODO Auto-generated method stub
+
 	}
 
 }
