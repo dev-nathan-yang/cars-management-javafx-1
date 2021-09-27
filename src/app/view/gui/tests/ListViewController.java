@@ -30,7 +30,7 @@ public class ListViewController implements Initializable {
 
 	
 	CarSystem carSys = new CarSystem();
-	ObservableList list = FXCollections.observableArrayList();
+	ObservableList<Vehicle> list = FXCollections.observableArrayList();
 	
 	
 
@@ -44,15 +44,14 @@ public class ListViewController implements Initializable {
 
 			@Override
 			public ListCell<Vehicle> call(ListView<Vehicle> arg0) {
-				// TODO Auto-generated method stub
-				return null;
+				return new ListViewCell();
 			}
 			
 		});
 		
 		
 		
-		// initializatio data start
+		// initialization data start
 		Customer c1 = new Customer("ALex", "1554897", "dfdf@gaa.com");
 		Customer c2 = new Customer("Bbob", "123213123", "bob@bob.com");
 		Customer c3 = new Customer("Cindy", "323213213", "cindy@qq.com");
@@ -76,8 +75,8 @@ public class ListViewController implements Initializable {
 		list.removeAll(list);
 		list.addAll(v1,v2,v3,v4);
 		
-		vehicle_list.getItems().addAll(list);
-		// initializaiton data end
+vehicle_list.setItems(list);
+		// initialization data end
 		
 		
 		
@@ -89,9 +88,10 @@ public class ListViewController implements Initializable {
 			System.out.println(plateNumber);
 			Vehicle target = carSys.retreiveVehicle(plateNumber);
 			list.removeAll(list);
+			
 			list.addAll(target);
-			vehicle_list.getItems().clear();
-			vehicle_list.getItems().addAll(list);
+			
+			System.out.println("Executed");
 		});
 	}
 

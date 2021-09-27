@@ -6,7 +6,7 @@
 <?import javafx.scene.text.Text?>
 
 
-<HBox fx:id="cellView" alignment="CENTER_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="60.0" prefWidth="600.0" spacing="5.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="CarListItemController">
+<HBox fx:id="cellView" alignment="CENTER_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="60.0" prefWidth="600.0" spacing="5.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.view.gui.tests.MyData">
    <children>
       <Button fx:id="car_edit_btn" mnemonicParsing="false" prefHeight="23.0" prefWidth="70.0" text="edit">
          <HBox.margin>
